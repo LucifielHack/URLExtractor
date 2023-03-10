@@ -1,0 +1,100 @@
+<!--
+ * URLExtractor - URL提取器
+ * 作者：Lucifiel
+ * 日期：2023年3月10日
+ -->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>域名提取器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        h1{
+            text-align: center;
+            margin-top: 20px;
+        }
+        label {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        textarea{
+            font-size: 16px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 20px;
+            resize: none;
+        }
+        .btn{
+            background: #0066cc;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 5px;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover{
+            background-color: #1a75ff;
+        }
+        #outputTextarea{
+            font-size: 16px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 20px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>域名提取器</h1>
+        <div>
+            <label for="inputTextarea">输入要提取的内容：</label><br>
+            <textarea id="inputTextarea" rows="10" placeholder="在此处粘贴你要提取的文本内容"></textarea>
+        </div>
+        <br>
+        <div>
+            <button class="btn" onclick="extract()">提取域名</button>
+        </div>
+        <br>
+        <div>
+            <label for="outputTextarea">提取出的域名：</label><br>
+            <textarea id="outputTextarea" rows="10" readonly placeholder="提取出的内容在此处显示"></textarea>
+        </div>
+    </div>
+    <script>
+        function extract() {
+            const inputText = document.getElementById('inputTextarea').value;
+            const domainRegex = /(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/g;
+            const matches = inputText.match(domainRegex) || [];
+            const uniqueDomains = [...new Set(matches)];
+            const suffixes = ['com', 'cn', 'org']; // add any valid suffixes here
+            const filteredDomains = uniqueDomains.filter(domain => {
+                const suffix = domain.split(".").pop();
+                return suffixes.includes(suffix);
+            });
+            const formattedDomains = filteredDomains.map(domain => {
+                const protocolRegex = /https?:\/\//;
+                const formattedDomain = domain.replace(protocolRegex, '');
+                return formattedDomain;
+            });
+            const outputText = formattedDomains.join('\n');
+            document.getElementById('outputTextarea').value = outputText;
+        }
+    </script>
+</body>
+</html>
